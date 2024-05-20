@@ -2,19 +2,19 @@ import { Restaurant, Product, RestaurantCategory, ProductCategory } from '../mod
 
 const promote = async function (req, res) {
   try {
-    const restaurant = await Restaurant.findByPk(req.params.restaurantId)
-    if (restaurant.promote) {
-      restaurant.promote = false
+    const selectedRestaurant = await Restaurant.findByPk(req.params.restaurantId)
+    if (selectedRestaurant.promoted) {
+      selectedRestaurant.promoted = false
     } else {
-      restaurant.promote = true
-      const restaurant2 = await Restaurant.findOne({ where: { promoted: true, userId: req.user.id } })
-      if (restaurant2 !== null) {
-        restaurant2.promote = false
-        await restaurant2.save()
+      selectedRestaurant.promoted = true
+      const existingPromotedRestaurant = await Restaurant.findOne({ where: { promoted: true, userId: req.user.id } })
+      if (existingPromotedRestaurant !== null && existingPromotedRestaurant !== selectedRestaurant) {
+        existingPromotedRestaurant.promoted = false
+        await existingPromotedRestaurant.save()
       }
     }
-    await restaurant.save()
-    res.json(restaurant)
+    await selectedRestaurant.save()
+    res.json(selectedRestaurant)
   } catch (err) {
     res.status(500).send(err)
   }
@@ -23,7 +23,7 @@ const index = async function (req, res) {
   try {
     const restaurants = await Restaurant.findAll(
       {
-        attributes: { exclude: ['userId', 'promoted'] },
+        attributes: { exclude: ['userId'] },
         include:
       {
         model: RestaurantCategory,
@@ -42,7 +42,7 @@ const indexOwner = async function (req, res) {
   try {
     const restaurants = await Restaurant.findAll(
       {
-        attributes: { exclude: ['userId', 'promoted'] },
+        attributes: { exclude: ['userId'] },
         where: { userId: req.user.id },
         include: [{
           model: RestaurantCategory,

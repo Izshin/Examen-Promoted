@@ -46,7 +46,7 @@ export default function ConfirmationModal (props) {
       <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
         <MaterialCommunityIcons name='thumb-up' color={'white'} size={20}/>
         <TextRegular textStyle={styles.text}>
-          Confirm promotion
+          Confirm
         </TextRegular>
       </View>
     </Pressable>

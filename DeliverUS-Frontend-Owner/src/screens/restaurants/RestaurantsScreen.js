@@ -43,6 +43,9 @@ export default function RestaurantsScreen ({ navigation, route }) {
         {item.averageServiceMinutes !== null &&
           <TextSemiBold>Avg. service time: <TextSemiBold textStyle={{ color: GlobalStyles.brandPrimary }}>{item.averageServiceMinutes} min.</TextSemiBold></TextSemiBold>
         }
+        {item.promoted &&
+              <TextSemiBold textStyle={{ color: GlobalStyles.brandPrimary }}>Promoted!!</TextSemiBold>
+              }
         <TextSemiBold>Shipping: <TextSemiBold textStyle={{ color: GlobalStyles.brandPrimary }}>{item.shippingCosts.toFixed(2)}€</TextSemiBold></TextSemiBold>
         <View style={styles.actionButtonsContainer}>
           <Pressable
@@ -63,24 +66,40 @@ export default function RestaurantsScreen ({ navigation, route }) {
             </TextRegular>
           </View>
         </Pressable>
-
-        <Pressable
+        {item.promoted && <Pressable
             onPress={() => setRestaurantToBePromoted(item)}
             style={({ pressed }) => [
               {
                 backgroundColor: pressed
-                  ? GlobalStyles.brandBlueTap
-                  : GlobalStyles.brandBlue
+                  ? GlobalStyles.brandSuccessTap
+                  : GlobalStyles.brandSuccess
               },
               styles.actionButton
             ]}>
           <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
-            <MaterialCommunityIcons name='exclamation' color={'white'} size={20}/>
+            <MaterialCommunityIcons name='star' color={'white'} size={20}/>
+            <TextRegular textStyle={styles.text}>
+              Un-Promote
+            </TextRegular>
+          </View>
+        </Pressable>}
+        {!item.promoted && <Pressable
+            onPress={() => setRestaurantToBePromoted(item)}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed
+                  ? GlobalStyles.brandSuccessTap
+                  : GlobalStyles.brandSuccess
+              },
+              styles.actionButton
+            ]}>
+          <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
+            <MaterialCommunityIcons name='star-outline' color={'white'} size={20}/>
             <TextRegular textStyle={styles.text}>
               Promote
             </TextRegular>
           </View>
-        </Pressable>
+        </Pressable>}
 
         <Pressable
             onPress={() => { setRestaurantToBeDeleted(item) }}
@@ -219,7 +238,7 @@ export default function RestaurantsScreen ({ navigation, route }) {
       isVisible={restaurantToBePromoted !== null}
       onCancel={() => setRestaurantToBePromoted(null)}
       onConfirm={() => patchRestaurant(restaurantToBePromoted)}>
-        <TextRegular>The restaurant will be promoted </TextRegular>
+        <TextRegular>The restaurant will be promoted, or unpromoted if its already promoted</TextRegular>
     </ConfirmationModal>
     </>
 
