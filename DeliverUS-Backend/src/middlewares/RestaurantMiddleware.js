@@ -28,16 +28,13 @@ const restaurantHasNoOrders = async (req, res, next) => {
 const checkRestaurantPromoted = async (req, res, next) => {
   try {
     if (req.body.promoted) {
-      const restaurantPromoted = await Restaurant.findOne({
-        where: {
-          promoted: true,
-          userId: req.user.id
-        }
+      const restaurantPromoted = await Restaurant.count({
+        where: { promoted: true, userId: req.user.id }
       })
-      if (restaurantPromoted !== null) {
+      if (restaurantPromoted === 0) {
         return next()
       }
-      return res.status(422).send('You already have a promoted restaurant')
+      return res.status(409).send('You already have a promoted restaurant')
     } else {
       return next()
     }

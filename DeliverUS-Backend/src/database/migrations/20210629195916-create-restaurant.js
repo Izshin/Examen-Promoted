@@ -31,6 +31,7 @@ module.exports = {
         type: Sequelize.DOUBLE
       },
       promoted: {
+        allowNull: false,
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
